@@ -4,6 +4,7 @@ import { Keypair, PublicKey } from '@solana/web3.js'
 import { Votingdapp } from '../target/types/votingdapp'
 import { publicKey } from '@coral-xyz/anchor/dist/cjs/utils'
 import { BankrunProvider, startAnchor } from 'anchor-bankrun'
+import exp from 'constants'
 
 const IDL = require("../target/idl/votingdapp.json")
 
@@ -35,6 +36,10 @@ describe('votingdapp', () => {
 
     const poll = await votingProgram.account.poll.fetch(pollAddress);
     console.log("Poll Address is ", poll)
+
+    expect(poll.pollId.toNumber()).toBe(1)
+    expect(poll.description).toBe("Test Poll")
+    expect(poll.pollStart.toNumber()).toBeLessThan(poll.pollEnd.toNumber())
 
   })
 
