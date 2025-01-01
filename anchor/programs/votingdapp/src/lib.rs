@@ -8,23 +8,29 @@ declare_id!("coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF");
 pub mod votingdapp {
     use super::*;
    
-    pub fn initialize_poll(_ctx: Context<InitializePoll>, _poll_id: u64) -> Result<{}>{
+    pub fn initialize_poll(_ctx: Context<InitializePoll>, _poll_id: u64) -> Result<()>{
       Ok(())
     }
 
 }
 
 #[derive(Accounts)]
+#[instruction(poll_id: u64)]
 pub struct InitializePoll<'info>{
 #[account(mut)]
 pub signer: Signer<'info>,
 
-#[account(init,
+#[account(
+   init,
 payer = signer,
+space = 8 + Poll::INIT_SPACE,
+seeds = [b"poll", poll_id.to_le_bytes().as_ref()],
+bump
 )]  
 
-#[account(init)]
-pub poll: Accounts<'info, Poll>,
+// #[account(init)]
+pub poll: Account<'info, Poll>,
+pub system_program: Program<'info, System>,
 
 }
 
@@ -32,7 +38,7 @@ pub poll: Accounts<'info, Poll>,
 #[derive(InitSpace)]
 pub struct Poll {
   pub poll_id:u64,
-  #[max_length(280)]
+  #[max_len(280)]  
   pub description: String,
   pub poll_start: u64,
   pub poll_end: u64,
