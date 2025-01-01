@@ -61,6 +61,18 @@ export type Votingdapp = {
         {
           "name": "pollId",
           "type": "u64"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "pollStart",
+          "type": "u64"
+        },
+        {
+          "name": "pollEnd",
+          "type": "u64"
         }
       ]
     }
