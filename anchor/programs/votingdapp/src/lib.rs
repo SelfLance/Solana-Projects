@@ -54,15 +54,15 @@ pub struct InitializeCandiate<'info>{
 
 #[instruction(poll_id: u64)]
 pub struct InitializePoll<'info>{
-#[account(mut)]
-pub signer: Signer<'info>,
+  #[account(mut)]
+  pub signer: Signer<'info>,
 
-#[account(
-   init,
-payer = signer,
-space = 8 + Poll::INIT_SPACE,
-seeds = [b"poll", poll_id.to_le_bytes().as_ref()],
-bump
+  #[account(
+    init,
+  payer = signer,
+  space = 8 + Poll::INIT_SPACE,
+  seeds = [b"poll", poll_id.to_le_bytes().as_ref()],
+  bump
 )]  
 pub poll: Account<'info, Poll>,
 pub system_program: Program<'info, System>,
@@ -72,6 +72,7 @@ pub system_program: Program<'info, System>,
 #[account]
 #[derive(InitSpace)]
 pub struct Candidate {
+  #[max_len(280)]
   pub candidate_name: String,
   pub candidate_votes: u64,
 }
