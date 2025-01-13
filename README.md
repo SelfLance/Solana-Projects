@@ -102,3 +102,9 @@ RPC URL: https://api.mainnet-beta.solana.com
 WebSocket URL: wss://api.mainnet-beta.solana.com/ (computed)
 Keypair Path: /Users/nasir/.config/solana/id.json 
 Commitment: confirmed 
+
+# Set solana Config to Localhost
+    solana config set -ul
+
+# Run Solana Test Validator
+   solana-test-validator
