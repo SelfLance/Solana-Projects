@@ -94,3 +94,11 @@ pnpm build
 ```
 
 Cakes: Website 
+
+# Get Configured Solana Network
+solana config get
+Config File: /Users/nasir/.config/solana/cli/config.yml
+RPC URL: https://api.mainnet-beta.solana.com 
+WebSocket URL: wss://api.mainnet-beta.solana.com/ (computed)
+Keypair Path: /Users/nasir/.config/solana/id.json 
+Commitment: confirmed 
