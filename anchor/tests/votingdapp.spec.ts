@@ -1,46 +1,68 @@
-import * as anchor from '@coral-xyz/anchor'
-import { Program } from '@coral-xyz/anchor'
-import { Keypair, PublicKey } from '@solana/web3.js'
-import { Votingdapp } from '../target/types/votingdapp'
-import { publicKey } from '@coral-xyz/anchor/dist/cjs/utils'
-import { BankrunProvider, startAnchor } from 'anchor-bankrun'
-import exp from 'constants'
+import * as anchor from '@coral-xyz/anchor';
+import { Program } from '@coral-xyz/anchor';
+import { Voting } from '../target/types/voting';
+import { PublicKey } from '@solana/web3.js';
 
-const IDL = require("../target/idl/votingdapp.json")
+describe('Voting', () => {
+  // Configure the client to use the local cluster.
+  anchor.setProvider(anchor.AnchorProvider.env());
 
-const votingAddress = new PublicKey("coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF");
+  const program = anchor.workspace.Voting as Program<Voting>;
 
-describe('votingdapp', () => {
+  it('initializePoll', async () => {
 
-  it(`its initialized Voting program`, async function () {
-    const context = await startAnchor("", [{ name: "votingDapp", programId: votingAddress }], []);
-    const provider = new BankrunProvider(context)
+    const [pollAddress] = PublicKey.findProgramAddressSync(
+      [Buffer.from("poll"), new anchor.BN(1).toArrayLike(Buffer, "le", 8)],
+      program.programId
+    );
 
-    const votingProgram = new Program<Votingdapp>(
-      IDL,
-      provider
-    )
-
-
-    await votingProgram.methods.initializePoll(
+    const tx = await program.methods.initializePoll(
       new anchor.BN(1),
-      "Test Poll",
-      new anchor.BN(Math.floor(Date.now() / 1000)),
-      new anchor.BN(Math.floor(Date.now() / 1000) + 86400)
-    ).rpc();
-    const [pollAddress] = PublicKey.findProgramAddressSync([
-      Buffer.from('poll'),
-      new anchor.BN(1).toArrayLike(Buffer, 'le', 8)
-    ]
-      , votingAddress);
+      new anchor.BN(0),
+      new anchor.BN(1759508293),
+      "test-poll",
+      "description",
+    )
+      .rpc();
 
-    const poll = await votingProgram.account.poll.fetch(pollAddress);
-    console.log("Poll Address is ", poll)
+    console.log('Your transaction signature', tx);
+  });
 
-    expect(poll.pollId.toNumber()).toBe(1)
-    expect(poll.description).toBe("Test Poll")
-    expect(poll.pollStart.toNumber()).toBeLessThan(poll.pollEnd.toNumber())
+  it('initialize candidates', async () => {
+    const pollIdBuffer = new anchor.BN(1).toArrayLike(Buffer, "le", 8)
 
-  })
+    const [pollAddress] = PublicKey.findProgramAddressSync(
+      [Buffer.from("poll"), pollIdBuffer],
+      program.programId
+    );
 
+    const smoothTx = await program.methods.initializeCandidate(
+      new anchor.BN(1),
+      "smooth",
+    ).accounts({
+      pollAccount: pollAddress
+    })
+      .rpc();
+
+    const crunchyTx = await program.methods.initializeCandidate(
+      new anchor.BN(1),
+      "crunchy",
+    ).accounts({
+      pollAccount: pollAddress
+    })
+      .rpc();
+
+    console.log('Your transaction signature', smoothTx);
+  });
+
+  it('vote', async () => {
+
+    const tx = await program.methods.vote(
+      new anchor.BN(1),
+      "smooth",
+    )
+      .rpc();
+
+    console.log('Your transaction signature', tx);
+  });
 });
