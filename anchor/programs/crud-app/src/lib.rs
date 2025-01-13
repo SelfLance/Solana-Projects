@@ -20,6 +20,9 @@ pub mod voting {
         Ok(())  
     }
     
+    pub fn delete_journal_entry(_ctx: Context<DeleteEntry> , _title:String) -> Result<()> {
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]
@@ -55,11 +58,23 @@ pub struct UpdateEntry<'info> {
 
     #[account(mut)]
     pub owner: Signer<'info>,
-
     pub system_program: Program<'info, System>,
-   
 }
 
+
+#[derive(Accounts)] 
+#[instruction(title: String)]
+pub struct DeleteEntry<'info>{
+    #[account(mut,
+        seeds =[title.as_bytes(), owner.key().as_ref()],
+        bump,
+        close=owner,
+    )]
+    pub journal_entry: Account<'info, JournalEntryState>,
+    #[account(mut)]
+    pub owner: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
 #[account]
 #[derive(InitSpace)]
 pub struct JournalEntryState {
