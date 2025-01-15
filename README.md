@@ -108,3 +108,8 @@ Commitment: confirmed
 
 # Run Solana Test Validator
    solana-test-validator
+
+# For Deploy Anchor Program
+    anchor deploy --provider.cluster localnet
+# For Sync keys of Anchor
+        anchor keys sync  
