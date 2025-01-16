@@ -28,3 +28,21 @@ console.log("Set up umi instance for user")
 
 const collectionAddress = publicKey("2dpwt3BbxU31R138xfpm8L61dxjrxgtHUw5MUhhAEXGK")
 console.log("Creating NFT....")
+
+const mint = generateSigner(umi);
+
+const transaction = await createNft(umi, {
+    mint,
+    name: "Shangirala",
+    uri: "https://raw.githubusercontent.com/nasiralishigri/metadata/refs/heads/main/nft1.json",
+    sellerFeeBasisPoints: percentAmount(0),
+    collection: {
+        key: collectionAddress,
+        verified: false
+    }
+})
+await transaction.sendAndConfirm(umi)
+const createdNft = await fetchDigitalAsset(umi, mint.publicKey)
+
+console.log(`🍱 Created NFT! Address is: ${getExplorerLink("address", createdNft.mint.publicKey, "devnet")}`);
+
