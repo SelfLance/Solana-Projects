@@ -32,8 +32,12 @@ const transaction = await createNft(umi, {
     mint: collectionMint,
     name: "My Collection",
     symbol: "MC",
-    uri: "http://.....",
+    uri: "https://raw.githubusercontent.com/nasiralishigri/metadata/refs/heads/main/metadata.json",
     sellerFeeBasisPoints: percentAmount(0),
     isCollection: true
 })
 await transaction.sendAndConfirm(umi);
+
+const createdCollectionNft = await fetchDigitalAsset(umi, collectionMint.publicKey)
+
+console.log(`Created Collection 📦! Address is ${getExplorerLink("address", createdCollectionNft.mint.publicKey, "devnet")}`,);
