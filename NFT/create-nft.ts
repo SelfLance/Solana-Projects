@@ -5,7 +5,7 @@ import { airdropIfRequired, getExplorerLink, getKeypairFromFile } from "@solana-
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
 
 import { Connection, LAMPORTS_PER_SOL, clusterApiUrl } from "@solana/web3.js"
-import { generateSigner, Keypair, keypairIdentity, percentAmount } from "@metaplex-foundation/umi";
+import { generateSigner, Keypair, keypairIdentity, percentAmount, publicKey } from "@metaplex-foundation/umi";
 
 const connection = new Connection(clusterApiUrl("devnet"));
 
@@ -25,3 +25,6 @@ const umiUser = umi.eddsa.createKeypairFromSecretKey(user.secretKey);
 umi.use(keypairIdentity(umiUser))
 
 console.log("Set up umi instance for user")
+
+const collectionAddress = publicKey("2dpwt3BbxU31R138xfpm8L61dxjrxgtHUw5MUhhAEXGK")
+console.log("Creating NFT....")
